@@ -1,6 +1,7 @@
 package app
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -16,5 +17,8 @@ func Start() {
 
 	router.HandleFunc("/login", lh.login).Methods(http.MethodPost)
 
+	fmt.Printf("Started the application")
+
 	http.ListenAndServe("localhost:8001", router)
+
 }

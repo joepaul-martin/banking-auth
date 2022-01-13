@@ -13,3 +13,17 @@ func NewValidationError(message string) *AppError {
 		Message: message,
 	}
 }
+
+func NotFoundError(message string) *AppError {
+	return &AppError{
+		Code:    http.StatusNotFound,
+		Message: message,
+	}
+}
+
+func NewUnexpectedError(message string) *AppError {
+	return &AppError{
+		Message: message,
+		Code:    http.StatusInternalServerError,
+	}
+}
