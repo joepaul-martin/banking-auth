@@ -18,11 +18,11 @@ func (lh *LoginHandler) login(w http.ResponseWriter, req *http.Request) {
 	if err != nil {
 		writeResponse(w, http.StatusBadRequest, "Error while reading content from login request")
 	}
-	appErr := lh.service.Login(loginRequest)
+	login, appErr := lh.service.Login(loginRequest)
 	if appErr != nil {
 		writeResponse(w, appErr.Code, appErr.Message)
 	} else {
-		writeResponse(w, http.StatusAccepted, "Login request validated")
+		writeResponse(w, http.StatusAccepted, login)
 	}
 }
 
