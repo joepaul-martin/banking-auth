@@ -1,0 +1,9 @@
+server:
+  serverAddress: "localhost"
+  serverPort: "8001"
+
+mysql:
+  db: "mysql"
+  port: "127.0.0.1:3306"
+  user: "root"
+  dbName: "banking"
