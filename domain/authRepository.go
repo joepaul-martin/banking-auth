@@ -2,6 +2,7 @@ package domain
 
 import (
 	"database/sql"
+	"fmt"
 
 	"github.com/jmoiron/sqlx"
 	"github.com/joepaul-martin/banking-auth/errs"
@@ -19,13 +20,13 @@ var _ AuthRepository = (*AuthRepositoryDb)(nil)
 
 func (d AuthRepositoryDb) FindBy(userName string, password string) (*Login, *errs.AppError) {
 	var login Login
-	sqlFindBy := "select username, u.customer_id, group_concat(a.account_id) accounts, role from users u left join accounts a on u.customer_id = a.customer_id where u.username = ? and u.password = ?"
+	sqlFindBy := "select username, u.customer_id, group_concat(a.account_id) accounts, role from users u left join accounts a on u.customer_id = a.customer_id where u.username = ? and u.password = ? group by u.customer_id "
 	err := d.client.Get(&login, sqlFindBy, userName, password)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return nil, errs.NotFoundError("User not found. Please provide correct username and password")
 		} else {
-			return nil, errs.NewUnexpectedError("Unexpected database error while trying to fetch user details")
+			return nil, errs.NewUnexpectedError(fmt.Sprintf("Unexpected database error while trying to fetch user details: %s", err.Error()))
 		}
 	}
 	return &login, nil

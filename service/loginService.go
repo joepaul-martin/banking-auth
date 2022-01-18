@@ -7,7 +7,7 @@ import (
 )
 
 type LoginService interface {
-	Login(dto.Login) (*domain.Login, *errs.AppError)
+	Login(dto.Login) (*string, *errs.AppError)
 }
 
 type DefaultLoginService struct {
@@ -16,7 +16,7 @@ type DefaultLoginService struct {
 
 var _ LoginService = (*DefaultLoginService)(nil)
 
-func (ls DefaultLoginService) Login(loginRequest dto.Login) (*domain.Login, *errs.AppError) {
+func (ls DefaultLoginService) Login(loginRequest dto.Login) (*string, *errs.AppError) {
 	err := loginRequest.Validate()
 	if err != nil {
 		return nil, err
@@ -25,7 +25,11 @@ func (ls DefaultLoginService) Login(loginRequest dto.Login) (*domain.Login, *err
 	if err != nil {
 		return nil, err
 	}
-	return login, nil
+	signedToken, err := login.GenerateToken()
+	if err != nil {
+		return nil, err
+	}
+	return signedToken, nil
 }
 
 func NewDefaultLoginService(repo domain.AuthRepositoryDb) DefaultLoginService {
